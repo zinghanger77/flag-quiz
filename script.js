@@ -7,6 +7,7 @@ async function loadCountries() {
   const res = await fetch('countries.json');
   countries = await res.json();
 
+  // Shuffle the countries array
   shuffledCountries = [...countries].sort(() => 0.5 - Math.random());
 
   const datalist = document.getElementById('countries');
@@ -24,15 +25,18 @@ function loadNextFlag() {
     document.getElementById('flag').src = '';
     document.getElementById('result').textContent = "🎉 You've completed all flags!";
     document.getElementById('progress').textContent = '';
+    document.getElementById('show-answer').textContent = '';
     showIncorrectAnswers();
     return;
   }
 
   const currentCountry = shuffledCountries[currentIndex];
   const flagUrl = `https://flagcdn.com/w320/${currentCountry.code}.png`;
+
   document.getElementById('flag').src = flagUrl;
   document.getElementById('guess').value = '';
   document.getElementById('result').textContent = '';
+  document.getElementById('show-answer').textContent = '';
   document.getElementById('progress').textContent = `${currentIndex + 1}/${shuffledCountries.length}`;
 }
 
@@ -57,6 +61,13 @@ function checkAnswer() {
   }
 }
 
+function showAnswer() {
+  if (currentIndex < shuffledCountries.length) {
+    const correct = shuffledCountries[currentIndex].name;
+    document.getElementById('show-answer').textContent = `Answer: ${correct}`;
+  }
+}
+
 function showIncorrectAnswers() {
   const list = document.getElementById('incorrect-list');
   list.innerHTML = '';
@@ -72,7 +83,7 @@ function showIncorrectAnswers() {
   });
 }
 
-// Attach Enter key listener AFTER DOM is loaded
+// Setup event listener on DOM load
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('guess').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
