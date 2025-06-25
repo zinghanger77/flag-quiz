@@ -80,13 +80,14 @@ function updateIncorrectAnswersList() {
   incorrectAnswers.forEach(item => {
     const li = document.createElement('li');
 
-    // Find the country by name (case-insensitive)
-    const countryObj = countries.find(c => c.name.toLowerCase() === item.correct.toLowerCase());
+    const countryObj = countries.find(
+      c => c.name.toLowerCase() === item.correct.toLowerCase()
+    );
 
-    // Create small flag image if found
     if (countryObj) {
       const img = document.createElement('img');
-      img.src = `https://flagcdn.com/w40/${countryObj.code}.png`;
+      const code = countryObj.code.toLowerCase(); // ✅ convert to lowercase
+      img.src = `https://flagcdn.com/w40/${code}.png`;
       img.alt = `${item.correct} flag`;
       img.style.width = '30px';
       img.style.height = '20px';
@@ -99,6 +100,7 @@ function updateIncorrectAnswersList() {
 
     const text = document.createTextNode(`❌ ${item.guess} → ✅ ${item.correct}`);
     li.appendChild(text);
+
     list.appendChild(li);
   });
 }
