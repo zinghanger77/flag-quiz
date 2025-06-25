@@ -4,15 +4,74 @@
   <meta charset="UTF-8">
   <title>Flag Quiz</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      width: 200px;
+      margin: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    p, #progress {
+      font-size: 1.2rem;
+      margin-top: 10px;
+    }
+
+    #incorrect-answers {
+      margin-top: 30px;
+      text-align: left;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #incorrect-answers ul {
+      padding-left: 0;
+      list-style: none;
+    }
+
+    #incorrect-answers li {
+      margin: 5px 0;
+      font-size: 1rem;
+      background: #fff3f3;
+      padding: 8px;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
   <h1>Flag Quiz</h1>
-  <p id="progress"></p>
-  <img id="flag" src="" alt="Country Flag" width="300">
-  <input type="text" id="guess" placeholder="Type country..." list="countries">
+  
+  <p id="progress">Loading...</p>
+  <img id="flag" src="" alt="Country Flag" width="300" height="200" style="border:1px solid #ccc;">
+  <br>
+  <input type="text" id="guess" placeholder="Type country..." list="countries" autocomplete="off">
   <datalist id="countries"></datalist>
   <button onclick="checkAnswer()">Submit</button>
   <p id="result"></p>
+
+  <div id="incorrect-answers">
+    <h2>Incorrect Answers</h2>
+    <ul id="incorrect-list"></ul>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
