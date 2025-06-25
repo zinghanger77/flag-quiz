@@ -1,9 +1,13 @@
 let countries = [];
-let currentCountry = null;
+let currentIndex = 0;
+let shuffledCountries = [];
 
 async function loadCountries() {
   const res = await fetch('countries.json');
   countries = await res.json();
+
+  // Shuffle the countries array
+  shuffledCountries = countries.sort(() => 0.5 - Math.random());
 
   const datalist = document.getElementById('countries');
   countries.forEach(c => {
@@ -12,28 +16,46 @@ async function loadCountries() {
     datalist.appendChild(option);
   });
 
-  loadRandomFlag();
+  loadNextFlag();
 }
 
-function loadRandomFlag() {
-  currentCountry = countries[Math.floor(Math.random() * countries.length)];
+function loadNextFlag() {
+  if (currentIndex >= shuffledCountries.length) {
+    document.getElementById('flag').src = '';
+    document.getElementById('result').textContent = "🎉 You've completed all flags!";
+    document.getElementById('progress').textContent = '';
+    return;
+  }
+
+  const currentCountry = shuffledCountries[currentIndex];
   const flagUrl = `https://flagcdn.com/w320/${currentCountry.code}.png`;
   document.getElementById('flag').src = flagUrl;
   document.getElementById('guess').value = '';
   document.getElementById('result').textContent = '';
+  document.getElementById('progress').textContent = `${currentIndex + 1}/${shuffledCountries.length}`;
 }
 
 function checkAnswer() {
   const guess = document.getElementById('guess').value.trim().toLowerCase();
-  const correct = currentCountry.name.toLowerCase();
+  const correct = shuffledCountries[currentIndex].name.toLowerCase();
   const result = document.getElementById('result');
 
   if (guess === correct) {
     result.textContent = "✅ Correct!";
-    setTimeout(loadRandomFlag, 1500);
+    currentIndex++;
+    setTimeout(loadNextFlag, 1000);
   } else {
     result.textContent = "❌ Try again!";
   }
 }
 
-loadCountries();
+// Enter key triggers submission
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('guess').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      checkAnswer();
+    }
+  });
+
+  loadCountries();
+});
