@@ -27,11 +27,17 @@
       padding: 10px 20px;
       font-size: 1rem;
       cursor: pointer;
+      margin: 5px;
     }
 
     p, #progress {
       font-size: 1.2rem;
       margin-top: 10px;
+    }
+
+    #show-answer {
+      font-style: italic;
+      color: #666;
     }
 
     #incorrect-answers {
@@ -64,8 +70,11 @@
   <br>
   <input type="text" id="guess" placeholder="Type country..." list="countries" autocomplete="off">
   <datalist id="countries"></datalist>
+  <br>
   <button onclick="checkAnswer()">Submit</button>
+  <button onclick="showAnswer()">Show Answer</button>
   <p id="result"></p>
+  <p id="show-answer"></p>
 
   <div id="incorrect-answers">
     <h2>Incorrect Answers</h2>
