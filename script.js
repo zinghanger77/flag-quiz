@@ -104,12 +104,22 @@ function updateIncorrectAnswersList() {
   });
 }
 
-window.showAnswer = function() {
+window.showAnswer = function () {
   if (currentIndex < shuffledCountries.length) {
     const correct = shuffledCountries[currentIndex].name;
     document.getElementById('show-answer').textContent = `Answer: ${correct}`;
+
+    // Only add if it's not already recorded
+    if (!incorrectAnswers.some(e => e.correct === correct)) {
+      incorrectAnswers.push({
+        guess: '[show answer]',
+        correct: correct
+      });
+      updateIncorrectAnswersList();
+    }
   }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('guess').addEventListener('keydown', function (e) {
