@@ -79,7 +79,17 @@ function updateIncorrectAnswersList() {
 
   incorrectAnswers.forEach(item => {
     const li = document.createElement('li');
-    li.textContent = `❌ ${item.guess} → ✅ ${item.correct}`;
+    
+    // Create small flag image
+    // Find country code by matching correct country name in countries array
+    const countryObj = countries.find(c => c.name === item.correct);
+    let imgHtml = '';
+    if (countryObj) {
+      const flagUrl = `https://flagcdn.com/w40/${countryObj.code}.png`;
+      imgHtml = `<img src="${flagUrl}" alt="${item.correct} flag" style="vertical-align: middle; margin-right: 8px; width: 40px; height: auto; border: 1px solid #ccc; border-radius: 3px;">`;
+    }
+
+    li.innerHTML = `${imgHtml} <strong>❌ ${item.guess}</strong> → ✅ ${item.correct}`;
     list.appendChild(li);
   });
 }
