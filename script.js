@@ -1,13 +1,13 @@
 let countries = [];
 let currentIndex = 0;
 let shuffledCountries = [];
+let incorrectAnswers = [];
 
 async function loadCountries() {
   const res = await fetch('countries.json');
   countries = await res.json();
 
-  // Shuffle the countries array
-  shuffledCountries = countries.sort(() => 0.5 - Math.random());
+  shuffledCountries = [...countries].sort(() => 0.5 - Math.random());
 
   const datalist = document.getElementById('countries');
   countries.forEach(c => {
@@ -24,6 +24,7 @@ function loadNextFlag() {
     document.getElementById('flag').src = '';
     document.getElementById('result').textContent = "🎉 You've completed all flags!";
     document.getElementById('progress').textContent = '';
+    showIncorrectAnswers();
     return;
   }
 
@@ -36,7 +37,8 @@ function loadNextFlag() {
 }
 
 function checkAnswer() {
-  const guess = document.getElementById('guess').value.trim().toLowerCase();
+  const guessInput = document.getElementById('guess');
+  const guess = guessInput.value.trim().toLowerCase();
   const correct = shuffledCountries[currentIndex].name.toLowerCase();
   const result = document.getElementById('result');
 
@@ -46,10 +48,31 @@ function checkAnswer() {
     setTimeout(loadNextFlag, 1000);
   } else {
     result.textContent = "❌ Try again!";
+    if (!incorrectAnswers.some(e => e.correct === shuffledCountries[currentIndex].name)) {
+      incorrectAnswers.push({
+        guess: guessInput.value || 'blank',
+        correct: shuffledCountries[currentIndex].name
+      });
+    }
   }
 }
 
-// Enter key triggers submission
+function showIncorrectAnswers() {
+  const list = document.getElementById('incorrect-list');
+  list.innerHTML = '';
+  if (incorrectAnswers.length === 0) {
+    list.innerHTML = '<li>No incorrect answers – well done!</li>';
+    return;
+  }
+
+  incorrectAnswers.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = `❌ ${item.guess} → ✅ ${item.correct}`;
+    list.appendChild(li);
+  });
+}
+
+// Attach Enter key listener AFTER DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('guess').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
