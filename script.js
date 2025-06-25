@@ -79,17 +79,26 @@ function updateIncorrectAnswersList() {
 
   incorrectAnswers.forEach(item => {
     const li = document.createElement('li');
-    
-    // Create small flag image
-    // Find country code by matching correct country name in countries array
-    const countryObj = countries.find(c => c.name === item.correct);
-    let imgHtml = '';
+
+    // Find the country by name (case-insensitive)
+    const countryObj = countries.find(c => c.name.toLowerCase() === item.correct.toLowerCase());
+
+    // Create small flag image if found
     if (countryObj) {
-      const flagUrl = `https://flagcdn.com/w40/${countryObj.code}.png`;
-      imgHtml = `<img src="${flagUrl}" alt="${item.correct} flag" style="vertical-align: middle; margin-right: 8px; width: 40px; height: auto; border: 1px solid #ccc; border-radius: 3px;">`;
+      const img = document.createElement('img');
+      img.src = `https://flagcdn.com/w40/${countryObj.code}.png`;
+      img.alt = `${item.correct} flag`;
+      img.style.width = '30px';
+      img.style.height = '20px';
+      img.style.marginRight = '8px';
+      img.style.verticalAlign = 'middle';
+      img.style.border = '1px solid #ccc';
+      img.style.borderRadius = '3px';
+      li.appendChild(img);
     }
 
-    li.innerHTML = `${imgHtml} <strong>❌ ${item.guess}</strong> → ✅ ${item.correct}`;
+    const text = document.createTextNode(`❌ ${item.guess} → ✅ ${item.correct}`);
+    li.appendChild(text);
     list.appendChild(li);
   });
 }
