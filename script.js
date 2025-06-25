@@ -7,21 +7,24 @@ async function loadCountries() {
   const res = await fetch('countries.json');
   countries = await res.json();
 
-  // Shuffle countries for random order each round
-  shuffledCountries = [...countries].sort(() => 0.5 - Math.random());
+  shuffledCountries = shuffleArray([...countries]);
 
   const datalist = document.getElementById('countries');
-  datalist.innerHTML = ''; // Clear previous options if any
+  datalist.innerHTML = '';
   countries.forEach(c => {
     const option = document.createElement('option');
     option.value = c.name;
     datalist.appendChild(option);
   });
 
-  // Initialize incorrect answers list display
+  incorrectAnswers = [];
   updateIncorrectAnswersList();
 
   loadNextFlag();
+}
+
+function shuffleArray(arr) {
+  return arr.sort(() => 0.5 - Math.random());
 }
 
 function loadNextFlag() {
@@ -40,7 +43,7 @@ function loadNextFlag() {
   document.getElementById('guess').value = '';
   document.getElementById('result').textContent = '';
   document.getElementById('show-answer').textContent = '';
-  document.getElementById('progress').textContent = `${currentIndex + 1}/${shuffledCountries.length}`;
+  document.getElementById('progress').textContent = `${currentIndex + 1} / ${shuffledCountries.length}`;
 }
 
 function checkAnswer() {
@@ -55,7 +58,6 @@ function checkAnswer() {
     setTimeout(loadNextFlag, 1000);
   } else {
     result.textContent = "❌ Try again!";
-    // Add to incorrect answers immediately if not already in the list
     if (!incorrectAnswers.some(e => e.correct === shuffledCountries[currentIndex].name)) {
       incorrectAnswers.push({
         guess: guessInput.value || 'blank',
@@ -89,7 +91,6 @@ window.showAnswer = function() {
   }
 }
 
-// Setup event listener for Enter key and load countries on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('guess').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
