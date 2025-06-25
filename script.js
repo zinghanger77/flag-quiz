@@ -61,7 +61,7 @@ function checkAnswer() {
   }
 }
 
-function showAnswer() {
+window.showAnswer = function() {
   if (currentIndex < shuffledCountries.length) {
     const correct = shuffledCountries[currentIndex].name;
     document.getElementById('show-answer').textContent = `Answer: ${correct}`;
