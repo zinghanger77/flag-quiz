@@ -7,15 +7,19 @@ async function loadCountries() {
   const res = await fetch('countries.json');
   countries = await res.json();
 
-  // Shuffle the countries array
+  // Shuffle countries for random order each round
   shuffledCountries = [...countries].sort(() => 0.5 - Math.random());
 
   const datalist = document.getElementById('countries');
+  datalist.innerHTML = ''; // Clear previous options if any
   countries.forEach(c => {
     const option = document.createElement('option');
     option.value = c.name;
     datalist.appendChild(option);
   });
+
+  // Initialize incorrect answers list display
+  updateIncorrectAnswersList();
 
   loadNextFlag();
 }
@@ -26,7 +30,6 @@ function loadNextFlag() {
     document.getElementById('result').textContent = "🎉 You've completed all flags!";
     document.getElementById('progress').textContent = '';
     document.getElementById('show-answer').textContent = '';
-    showIncorrectAnswers();
     return;
   }
 
@@ -52,27 +55,23 @@ function checkAnswer() {
     setTimeout(loadNextFlag, 1000);
   } else {
     result.textContent = "❌ Try again!";
+    // Add to incorrect answers immediately if not already in the list
     if (!incorrectAnswers.some(e => e.correct === shuffledCountries[currentIndex].name)) {
       incorrectAnswers.push({
         guess: guessInput.value || 'blank',
         correct: shuffledCountries[currentIndex].name
       });
+      updateIncorrectAnswersList();
     }
   }
 }
 
-window.showAnswer = function() {
-  if (currentIndex < shuffledCountries.length) {
-    const correct = shuffledCountries[currentIndex].name;
-    document.getElementById('show-answer').textContent = `Answer: ${correct}`;
-  }
-}
-
-function showIncorrectAnswers() {
+function updateIncorrectAnswersList() {
   const list = document.getElementById('incorrect-list');
   list.innerHTML = '';
+
   if (incorrectAnswers.length === 0) {
-    list.innerHTML = '<li>No incorrect answers – well done!</li>';
+    list.innerHTML = '<li>No incorrect answers yet.</li>';
     return;
   }
 
@@ -83,7 +82,14 @@ function showIncorrectAnswers() {
   });
 }
 
-// Setup event listener on DOM load
+window.showAnswer = function() {
+  if (currentIndex < shuffledCountries.length) {
+    const correct = shuffledCountries[currentIndex].name;
+    document.getElementById('show-answer').textContent = `Answer: ${correct}`;
+  }
+}
+
+// Setup event listener for Enter key and load countries on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('guess').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
