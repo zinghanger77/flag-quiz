@@ -94,11 +94,9 @@ function updateIncorrectAnswersList() {
       img.style.borderRadius = '3px';
 
       li.appendChild(img);
-    } else {
-      console.warn(`No flag found for ${item.correct}`);
     }
 
-    const text = document.createTextNode(`❌ ${item.guess} → ✅ ${item.correct}`);
+    const text = document.createTextNode(`✅ ${item.correct} → ❌ ${item.guess}`);
     li.appendChild(text);
     list.appendChild(li);
   });
