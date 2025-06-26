@@ -81,6 +81,7 @@ function updateIncorrectAnswersList() {
     const li = document.createElement('li');
     const countryObj = countries.find(c => c.name.toLowerCase() === item.correct.toLowerCase());
 
+    // Flag image
     if (countryObj && countryObj.code) {
       const img = document.createElement('img');
       const code = countryObj.code.toLowerCase();
@@ -92,12 +93,22 @@ function updateIncorrectAnswersList() {
       img.style.verticalAlign = 'middle';
       img.style.border = '1px solid #ccc';
       img.style.borderRadius = '3px';
-
       li.appendChild(img);
     }
 
-    const text = document.createTextNode(`✅ ${item.correct} → ❌ ${item.guess}`);
-    li.appendChild(text);
+    // Correct answer part
+    const correctText = document.createTextNode(`✅ ${item.correct} → ❌ `);
+    li.appendChild(correctText);
+
+    // Incorrect guess or [no answer]
+    if (item.guess === '[show answer]') {
+      const italic = document.createElement('em');
+      italic.textContent = '[no answer]';
+      li.appendChild(italic);
+    } else {
+      li.appendChild(document.createTextNode(item.guess));
+    }
+
     list.appendChild(li);
   });
 }
@@ -122,9 +133,18 @@ window.showAnswer = function () {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('guess').addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
+      const input = e.target;
+      const value = input.value.trim().toLowerCase();
+
+      const match = countries.find(c => c.name.toLowerCase().startsWith(value));
+      if (match && value !== match.name.toLowerCase()) {
+        input.value = match.name;
+      }
+
       checkAnswer();
     }
   });
 
   loadCountries();
 });
+
